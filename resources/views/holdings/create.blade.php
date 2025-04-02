@@ -79,12 +79,22 @@
                             </div>
                             <div class="col-md-3">
                                 <div
-                                    class="form-group{{ $errors->has('unit_price') ? ' has-danger' : '' }} mr-5 unit cbm-input">
+                                    class="form-group{{ $errors->has('unit_price') ? ' has-danger' : '' }} unit cbm-input">
                                     <label>{{ _('Unit Price') }} </label>
                                     <input type="number" step="any" name="unit_price"
                                         class="form-control{{ $errors->has('unit_price') ? ' is-invalid' : '' }}"
                                         placeholder="{{ _('Unit Price') }}" value="{{ old('unit_price') }}">
                                     @include('alerts.feedback', ['field' => 'unit_price'])
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div
+                                    class="form-group{{ $errors->has('unit_price') ? ' has-danger' : '' }}">
+                                    <label>{{ _('Commission') }} </label>
+                                    <input type="number" step="any" name="commission"
+                                           class="form-control{{ $errors->has('unit_price') ? ' is-invalid' : '' }}"
+                                           placeholder="{{ _('Commission') }}" value="{{ old('commission') }}">
+                                    @include('alerts.feedback', ['field' => 'commission'])
                                 </div>
                             </div>
                         </div>
@@ -162,8 +172,6 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             $(document).ready(function() {
-
-
                 $('#type').selectize({
                     placeholder: 'Transaction Type'
                 });
@@ -190,9 +198,7 @@
                     price = (Math.round(price * 100) / 100).toFixed(2);
                     $('#purchase').val(price);
                     $('#total').val(price);
-
                 });
-
             });
         </script>
     @endpush

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Http\Requests\Common\PaginatedRequest;
@@ -6,26 +7,30 @@ use App\Models\Holding;
 use App\Models\HoldingOverview;
 use App\Models\HoldingStatusHistory;
 
-class HoldingService {
+class HoldingService
+{
+    const HOLDING_TYPES = ['cover', 'credit', 'withdrawal', 'sell'];
 
-    public function search( PaginatedRequest $request ){
+    public function search(PaginatedRequest $request)
+    {
         $query = Holding::query();
-        if($request->client_id ){
+        if ($request->client_id) {
             $query = $query->with('client');
             $query = $query->where('user_id', $request->client_id);
         }
-        if(!empty($request->keyword)){
+        if (!empty($request->keyword)) {
             $query = $query->where('symbol', 'like', '%'.$request->keyword.'%')
-            ->orWhere('stock_name', 'like', '%'.$request->keyword.'%')->orWhere('transaction_no', 'like', '%'.$request->keyword.'%');
+                ->orWhere('stock_name', 'like', '%'.$request->keyword.'%')->orWhere('transaction_no', 'like', '%'.$request->keyword.'%');
         }
-        if(!empty($request->type)){
+        if (!empty($request->type)) {
             $query = $query->where('type', $request->type);
         }
         $query = $query->orderby('created_at', 'desc')->orderBy('trade_date', 'desc');
         return $query->paginate($request->per_page);
     }
 
-    public function findById($id) : Holding{
+    public function findById($id): Holding
+    {
         $query = Holding::find($id);
         return $query;
     }
@@ -36,7 +41,8 @@ class HoldingService {
      * @param int $userId
      * @return void
      */
-    public function recentUserHoldings( $userId ){
+    public function recentUserHoldings($userId)
+    {
 
         $request = new PaginatedRequest();
         $request->client_id = $userId;
@@ -50,24 +56,26 @@ class HoldingService {
      *
      * @return void
      */
-    public function getTransactionTypes(){
+    public function getTransactionTypes()
+    {
         $statuses = ['buy', 'sell', 'withdrawal', 'credit', 'cancelled', 'short', 'cover'];
         sort($statuses);
         return $statuses;
     }
 
-    public function getOverview($client_id){
+    public function getOverview($client_id)
+    {
         $query = Holding::query();
         $query = $query->where('user_id', $client_id)->groupBy('symbol');
-        $result =  $query->select('symbol')->distinct()->get()->keyBy('symbol')->toArray();
+        $result = $query->select('symbol')->distinct()->get()->keyBy('symbol')->toArray();
         $details = HoldingOverview::query()->where('user_id', $client_id)->get()->keyBy('symbol')->toArray();
         $overview = [];
         ksort($result);
-        foreach($result as $symbol => $value){
-            if(array_key_exists($symbol, $details) === true){
+        foreach ($result as $symbol => $value) {
+            if (array_key_exists($symbol, $details) === true) {
                 $overview[$symbol]['qty'] = $details[$symbol]['qty'];
                 $overview[$symbol]['price'] = floatval($details[$symbol]['price']);
-            }else{
+            } else {
                 $overview[$symbol]['qty'] = 0;
                 $overview[$symbol]['price'] = 0;
             }
@@ -75,17 +83,18 @@ class HoldingService {
         return $overview;
     }
 
-    public function saveOverview($overview, $client_id){
+    public function saveOverview($overview, $client_id)
+    {
         HoldingOverview::query()->where('user_id', $client_id)->delete();
         $data = [];
-        foreach($overview as $symbol => $details){
+        foreach ($overview as $symbol => $details) {
             $qty = $details['qty'];
             $price = $details['price'];
             HoldingOverview::create([
                 'user_id' => $client_id,
-                'symbol' => $symbol,
-                'qty' => $qty,
-                'price' => $price,
+                'symbol'  => $symbol,
+                'qty'     => $qty,
+                'price'   => $price,
             ]);
         }
         return true;
@@ -97,13 +106,15 @@ class HoldingService {
      *
      * @return void
      */
-    public function getSymbols(){
+    public function getSymbols()
+    {
         $query = Holding::query();
         $symbols = $query->select('symbol')->distinct()->get()->keyBy('symbol')->toArray();
         return array_combine(array_keys($symbols), array_keys($symbols));
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         HoldingStatusHistory::query()->where('holding_id', $id)->delete();
         Holding::query()->where('id', $id)->delete();
         return true;
@@ -115,36 +126,36 @@ class HoldingService {
      * @param [type] $holding
      * @return void
      */
-    public function formatPnL($holding){
-        $types = ['cover', 'credit', 'withdrawal'];
-        $arrTypes = array_combine($types, $types);
-        if( array_key_exists(strtolower($holding->type), $arrTypes) === true){
+    public function formatPnL($holding)
+    {
+        $arrTypes = array_combine(self::HOLDING_TYPES, self::HOLDING_TYPES);
+        if (array_key_exists(strtolower($holding->type), $arrTypes) === true) {
             return number_format($holding->profit_loss, 2);
         }
 
-        if(strtolower($holding->type) == 'short'){
+        if (strtolower($holding->type) == 'short') {
             return 'Unrealized';
         }
-        if( strtolower($holding->type)  == 'buy'){
+        if (strtolower($holding->type) == 'buy') {
             return 'Holding';
         }
 
         return null;
     }
 
-    public function getClientPnl($user_id){
-        $arrTypes = ['cover', 'credit', 'withdrawal'];
+    public function getClientPnl($user_id)
+    {
         $query = Holding::query();
         $query = $query->where('user_id', $user_id);
-        $query = $query->whereIn('type', ['cover', 'credit', 'withdrawal']);
+        $query = $query->whereIn('type', self::HOLDING_TYPES);
         $query = $query->groupBy('type');
         $query = $query->selectRaw('type, sum(profit_loss) as pnl');
         $queryResult = $query->get()->keyBy('type')->toArray();
         $result = [];
-        foreach($arrTypes as $type){
-            if(array_key_exists($type, $queryResult) === false){
+        foreach (self::HOLDING_TYPES as $type) {
+            if (array_key_exists($type, $queryResult) === false) {
                 $result[$type] = 0;
-            }else{
+            } else {
                 $result[$type] = $queryResult[$type]['pnl'];
             }
         }

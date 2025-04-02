@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReplyController;
@@ -20,6 +21,10 @@ use App\Http\Controllers\Auth\ConfirmPasswordController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//Auth::login(User::find(20)); // Admin
+Auth::login(User::find(21)); // Samuel Testing
+
 
 Route::get('/', function () {
     return redirect()->route('login');

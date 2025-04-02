@@ -13,6 +13,7 @@
                 <th scope="col">Type</th>
                 <th scope="col">Status</th>
                 <th scope="col">Total Volume</th>
+                <th scope="col">Commission</th>
                 <th scope="col">PnL</th>
                 <th scope="col"></th>
             </tr>
@@ -55,8 +56,12 @@
                         {{ number_format($holding->total, 2) }}
                     </td>
                     <td>
+                        {{ number_format($holding->commission, 2) }}
+                    </td>
+                    <td>
                         {{ $holdingService->formatPnl($holding) }}
                     </td>
+
                     <td class="td-actions text-right">
                         @if (auth()->user()->hasAnyRole(['admin']))
                             <a href="{{ route('holdings.show', ['holding' => $holding]) }}"

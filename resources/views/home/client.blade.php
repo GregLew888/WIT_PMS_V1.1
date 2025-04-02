@@ -80,9 +80,9 @@ $portfolio = $marketOverview['portfolio'];
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <h4 class="card-title">Transactions</h4>
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h4 class="card-title">Transactions</h4>
                     <div class="card-body" id="realtime-transaction-feed">
                         @include('widgets.holdings.transactions-table', ['holdings' => $holdings])
                     </div>
