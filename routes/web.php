@@ -23,7 +23,7 @@ use App\Http\Controllers\Auth\ConfirmPasswordController;
 */
 
 //Auth::login(User::find(20)); // Admin
-Auth::login(User::find(21)); // Samuel Testing
+//Auth::login(User::find(21)); // Samuel Testing
 
 
 Route::get('/', function () {
