@@ -1,0 +1,19 @@
+// Fonts
+@import url('https://fonts.bunny.net/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// JP Morgan professional style for empty data tables (enhanced specificity)
+.table tbody tr td[colspan] h6 {
+    color: #888 !important;
+    font-weight: 400 !important;
+    font-size: 1rem !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    padding: 25px 0 !important;
+    margin: 0 !important;
+}

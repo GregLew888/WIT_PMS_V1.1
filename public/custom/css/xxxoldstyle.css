@@ -1,0 +1,87 @@
+.profile-pic {
+	 color: transparent;
+	 transition: all 0.3s ease;
+	 display: flex;
+	 justify-content: center;
+	 align-items: center;
+	 position: relative;
+	 transition: all 0.3s ease;
+}
+ .profile-pic input {
+	 display: none;
+}
+ .profile-pic img {
+	 position: absolute;
+	 object-fit: cover;
+	 width: 165px;
+	 height: 165px;
+	 box-shadow: 0 0 10px 0 rgba(255, 255, 255, .35);
+	 border-radius: 100px;
+	 z-index: 0;
+}
+ .profile-pic .-label {
+	 cursor: pointer;
+	 height: 165px;
+	 width: 165px;
+}
+ .profile-pic:hover .-label {
+	 display: flex;
+	 justify-content: center;
+	 align-items: center;
+	 background-color: rgba(0, 0, 0, .8);
+	 z-index: 10000;
+	 color: #fafafa;
+	 transition: background-color 0.2s ease-in-out;
+	 border-radius: 100px;
+	 margin-bottom: 0;
+}
+ .profile-pic span {
+	color:#fafafa;
+	 display: inline-flex;
+	 padding: 0.2em;
+	 height: 2em;
+}
+
+table.table-user-overview thead th, table.table-user-overview thead td {
+    border-bottom: 1px solid #E8E8E8;
+    text-align: right;
+}
+
+table.table-user-overview thead th{
+    width: 60%;
+}
+table.table-user-overview thead td {
+    width: 40%; text-align: right;
+}
+.holding-overview-card .card-body{
+    height: 500px;
+    overflow: auto;
+
+}
+
+.fixTableHead {
+    overflow-y: auto;
+    height: 100%;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.fixTableHead thead th {
+    position: sticky;
+    top: 0;
+}
+
+.account-balance{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.card-account-balance{
+    min-height: 300px;
+}
+.vcenter-item{
+    display: flex;
+    align-items: center;
+}
